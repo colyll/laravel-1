@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Constants\DataStatusConst;
+use App\Models\{{class}};
+
+class {{class}}Repository {
+    use Repository;
+
+    public function getList(array $param = [], $field = ['*'])
+	{
+        $wheres = [];
+{{listBody}}
+
+        $data = {{class}}::query()->where($wheres);
+        // $count = $model->count();
+        $this->order($data, $param);
+        $this->page($data, $param);
+        $data = $data->get($field)->toArray();
+
+        return ['list' => $data];
+    }
+
+    public function create(array $param = [])
+	{
+        $model = new {{class}}();
+{{updateBody}}
+
+        $data = $model->save();
+        if ( !$data) {
+//           throw new
+        }
+        
+        return $model;
+    }
+
+    public function info($id, array $fields = ['*'])
+	{
+        return {{class}}::query()->find($id, $fields);
+    }
+
+    public function update(array $param = [])
+    {
+        $model = {{class}}::query()->where('id', $param['id'])->first();
+        if (!$model) {
+            return  false;
+        }
+{{updateBody}}
+
+        return $model->save();
+    }
+
+    public function delete(int $id)
+    {
+        return {{class}}::query()->where('id', $id)->update(['status' => DataStatusConst::DELETED]);
+    }
+
+}

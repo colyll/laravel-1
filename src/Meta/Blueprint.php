@@ -55,6 +55,11 @@ class Blueprint
      * @var bool
      */
     protected $isView;
+	
+	/**
+     * @var string
+     */
+	protected $comment;
 
     /**
      * Blueprint constructor.
@@ -227,6 +232,15 @@ class Blueprint
     public function connection()
     {
         return $this->connection;
+    }
+	
+	/**
+     * @return \Illuminate\Support\Fluent
+     */
+	public function withComment($comment){
+        $this->comment = $comment;
+        
+        return $this;
     }
 
     /**

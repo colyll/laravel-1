@@ -1,0 +1,134 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\{{class}}Service;
+use Illuminate\Http\Request;
+
+class {{class}}Controller extends Controller
+{
+    /**
+    //Web Routers
+    
+    Route::group(['prefix'=>'{{classLower}}','as'=>'{{classLower}}.'], function(){
+       Route::get('/list', '{{class}}Controller@getList')->name('list');
+       Route::post('/list', '{{class}}Controller@getList');
+       Route::get('/info', '{{class}}Controller@info')->name('info');
+       Route::get('/add', '{{class}}Controller@addForm')->name('add');
+       Route::post('/add', '{{class}}Controller@add');
+       Route::get('/edit', '{{class}}Controller@edit')->name('edit');
+       Route::post('/update', '{{class}}Controller@update')->name('update');
+       Route::get('/delete', '{{class}}Controller@delete')->name('delete');
+       Route::post('/delete', '{{class}}Controller@delete');
+    });
+    
+     */
+
+    protected $service;
+
+    public function __construct()
+	{
+
+        $this->service = new {{class}}Service();
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function getList(Request $request) : array
+	{
+        $rule = [
+            'page' => 'nullable',
+            'page_size' => 'nullable',
+{{rule}}
+        ];
+
+        $param = $request->validate($rule);
+
+        return self::formatBody($this->service->getList($param));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function addForm()
+    {
+        return view('{{classLower}}.add');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  Request  $request
+     *
+     * @return array
+     */
+    public function add(Request $request) : array
+	{
+        $rule = [
+{{rule}}
+        ];
+
+        $param = $request->validate($rule);
+
+        return self::formatBody($this->service->create($param));
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function info(Request $request) : array
+	{
+        $rule = [
+            'id' => 'required|min:1'
+        ];
+
+        $param = $request->validate($rule);
+
+        return self::formatBody($this->service->info($param));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     */
+    public function edit(Request $request)
+    {
+        $rule = [
+            'id' => 'required|min:1'
+        ];
+
+        $param = $request->validate($rule);
+        $data = $this->service->info($param);
+
+        return view('{{classLower}}.edit', $data);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request) : array
+	{
+        $rule = [
+{{rule}}
+        ];
+
+        $param = $request->validate($rule);
+
+        return self::formatBody($this->service->update($param));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function delete(Request $request) : array
+	{
+        $rule = [
+            'id' => 'required|min:1'
+        ];
+
+        $param = $request->validate($rule);
+
+        return self::formatBody($this->service->delete($param));
+    }
+}

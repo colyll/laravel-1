@@ -388,6 +388,14 @@ class Model
 
         return $this->blueprint->table();
     }
+	
+	/**
+     * @return string
+     */
+	public function getComment()
+    {
+        return $this->blueprint->comment();
+    }
 
     /**
      * @return string

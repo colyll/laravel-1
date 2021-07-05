@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Services;
+
+use App\Constants\CacheConst;
+use App\Repositories\{{class}}Repository;
+use Illuminate\Support\Facades\Cache;
+
+class ConfigService
+{
+    use RedisTrait;
+    protected $repository;
+    private $cache_head = '{{classLower}}:';
+
+    public function __construct() {
+        $this->connectRedis();
+        $this->repository = new {{class}}Repository();
+    }
+
+    public function getList($param) : array
+    {
+
+        return $this->repository->getList($param);
+    }
+
+    public function create($param)
+    {
+
+        return $this->repository->create($param);
+    }
+
+    public function info($param, $fields = ['*'])
+    {
+        $data = Cache::get($this->cache_head .'info:'.$param['id']);
+        if ( !$data) {
+            $data = $this->repository->info($param['id']);
+            if ($data) {
+                $data = $data->toArray();
+                Cache::put($this->cache_head .'info:'. $param['id'], $data, CacheConst::EXPIRED_TIME);
+            }
+        }
+        $result = [];
+        if (['*'] != $fields && !empty($data)) {
+            foreach ($fields as $field) {
+                $result[$field] = $data[$field];
+            }
+        } else {
+            $result = &$data;
+        }
+
+        return $result;
+    }
+
+    public function update($param) : array
+    {
+        $data = $this->repository->update($param);
+        if ($data) {
+            $this->removeInfoCache($param['id']);
+        }
+
+        return ['result'=>$data];
+    }
+
+    public function delete($param) : array
+    {
+        $data = $this->repository->delete($param['id']);
+        if ($data) {
+            $this->removeInfoCache($param['id']);
+        }
+
+        return ['result'=>$data];
+    }
+}

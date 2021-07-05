@@ -26,6 +26,9 @@ return [
         */
 
         'path' => app_path('Models'),
+        'path_controller' => app_path('Models'),
+        'path_service' => app_path('Services'),
+        'path_repository' => app_path('Repositories'),
 
         /*
         |--------------------------------------------------------------------------
@@ -101,13 +104,13 @@ return [
 
         'timestamps' => true,
 
-        // 'timestamps' => [
-        //     'enabled' => true,
-        //     'fields' => [
-        //         'CREATED_AT' => 'created_at',
-        //         'UPDATED_AT' => 'updated_at',
-        //     ]
-        // ],
+         'timestamps' => [
+             'enabled' => true,
+             'fields' => [
+                 'CREATED_AT' => 'create_time',
+                 'UPDATED_AT' => 'update_time',
+             ]
+         ],
 
         /*
         |--------------------------------------------------------------------------

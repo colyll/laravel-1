@@ -163,14 +163,27 @@ class Factory
     {
         $model = $this->makeModel($schema, $table);
         $template = $this->prepareTemplate($model, 'model');
+        $template_controller = $this->prepareTemplate($model, 'controller');
+        $template_repository = $this->prepareTemplate($model, 'repository');
+        $template_service = $this->prepareTemplate($model, 'service');
 
         $file = $this->fillTemplate($template, $model);
+        $file_repository = $this->fillTemplateRepository($template_repository, $model);
+        $file_service = $this->fillTemplateService($template_service, $model);
+        $file_controller = $this->fillTemplateController($template_controller, $model);
 
         if ($model->indentWithSpace()) {
             $file = str_replace("\t", str_repeat(' ', $model->indentWithSpace()), $file);
+            $file_repository = str_replace("\t", str_repeat(' ', $model->indentWithSpace()), $file_repository);
+            $file_service = str_replace("\t", str_repeat(' ', $model->indentWithSpace()), $file_service);
+            $file_controller = str_replace("\t", str_repeat(' ', $model->indentWithSpace()), $file_controller);
         }
 
         $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : []), $file);
+        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [], 'Repository'), $file_repository);
+        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [], 'Service'), $file_service);
+        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [], 'Controller'), $file_controller);
+
 
         if ($this->needsUserFile($model)) {
             $this->createUserFile($model);
@@ -250,6 +263,7 @@ class Factory
      */
     protected function fillTemplate($template, Model $model)
     {
+		$template = str_replace('{{comment}}', $model->getComment(), $template);
         $template = str_replace('{{namespace}}', $model->getBaseNamespace(), $template);
         $template = str_replace('{{class}}', $model->getClassName(), $template);
 
@@ -267,6 +281,40 @@ class Factory
 
         $imports = $this->imports(array_keys($dependencies), $model);
         $template = str_replace('{{imports}}', $imports, $template);
+
+        return $template;
+    }
+
+    protected function fillTemplateController($template, Model $model)
+    {
+        $template = str_replace('{{classLower}}', strtolower($model->getClassName()), $template);
+        $template = str_replace('{{class}}', $model->getClassName(), $template);
+
+        $rules = $this->rule($model);
+        $template = str_replace('{{rule}}', $rules, $template);
+
+
+        return $template;
+    }
+
+    protected function fillTemplateService($template, Model $model)
+    {
+		$template = str_replace('{{classLower}}', strtolower($model->getClassName()), $template);
+        $template = str_replace('{{class}}', $model->getClassName(), $template);
+
+        return $template;
+    }
+
+    protected function fillTemplateRepository($template, Model $model)
+    {
+        $template = str_replace('{{classLower}}', strtolower($model->getClassName()), $template);
+        $template = str_replace('{{class}}', $model->getClassName(), $template);
+
+        $listBody = $this->listBody($model);
+        $template = str_replace('{{listBody}}', $listBody, $template);
+
+        $updateBody = $this->updateBody($model);
+        $template = str_replace('{{updateBody}}', $updateBody, $template);
 
         return $template;
     }
@@ -354,7 +402,11 @@ class Factory
         // Process property annotations
         $annotations = '';
 
+        $hints = $model->getHints();
         foreach ($model->getProperties() as $name => $hint) {
+            if (!empty($hints[$name])) {
+                $name .= '  '.$hints[$name];
+            }
             $annotations .= $this->class->annotation('property', "$hint \$$name");
         }
 
@@ -369,6 +421,73 @@ class Factory
                 continue;
             }
             $annotations .= $this->class->annotation('property', $relation->hint()." \$$name");
+        }
+
+        return $annotations;
+    }
+
+    protected function rule(Model $model)
+    {
+        // Process property annotations
+        $annotations = '';
+
+        foreach ($model->getBlueprint()->columns() as $column) {
+            $annotations .= "\t\t\t'".$column->name."' => 'nullable',\n";
+        }
+
+        return $annotations;
+    }
+
+
+    protected function listBody(Model $model)
+    {
+        // Process property annotations
+        $annotations = '';
+
+        foreach ($model->getBlueprint()->columns() as $column) {
+            switch ($column->type) {
+                case 'string':
+                    $annotations .= "\t\tif (isset(\$param['".$column->name."']) && trim(\$param['".$column->name."'])) {\n".
+                        "\t\t\t\$wheres[] = ['".$column->name."', 'like', '%'.\$param['".$column->name."'].'%'];\n".
+                        "\t\t}\n";
+                    break;
+
+                case 'bool':
+                    $annotations .= "\t\tif (isset(\$param['".$column->name."'])) {\n".
+                        "\t\t\t\$wheres[] = ['".$column->name."', '=', \$param['".$column->name."']];\n".
+                        "\t\t}\n";
+                    break;
+
+                default :
+                    $annotations .= "\t\tif (!empty(\$param['".$column->name."'])) {\n".
+                        "\t\t\t\$wheres[] = ['".$column->name."', '=', \$param['".$column->name."']];\n".
+                        "\t\t}\n";
+            }
+        }
+
+        return $annotations;
+    }
+
+
+    protected function updateBody(Model $model)
+    {
+        // Process property annotations
+        $annotations = '';
+
+        foreach ($model->getBlueprint()->columns() as $column) {
+            switch ($column->type) {
+                case 'int':
+                    $value = 0;
+                    break;
+                case 'string':
+                    $value = "''";
+                    break;
+                default:
+                    $value = '';
+                    break;
+            }
+
+            $annotations .= "\t\t\t\$param['".$column->name."'] => empty(\$param['".$column->name."']) ? $value : \$param['".$column->name."'],\n";
         }
 
         return $annotations;
@@ -495,15 +614,28 @@ class Factory
      *
      * @return string
      */
-    protected function modelPath(Model $model, $custom = [])
+    protected function modelPath(Model $model, $custom = [], $type = '')
     {
-        $modelsDirectory = $this->path(array_merge([$this->config($model->getBlueprint(), 'path')], $custom));
+        switch ($type) {
+            case 'Controller':
+                $key = 'path_controller';
+                break;
+            case 'Service':
+                $key = 'path_service';
+                break;
+            case 'Repository':
+                $key = 'path_repository';
+                break;
+            default :
+                $key = 'path';
+        }
+        $modelsDirectory = $this->path(array_merge([$this->config($model->getBlueprint(), $key)], $custom));
 
         if (! $this->files->isDirectory($modelsDirectory)) {
             $this->files->makeDirectory($modelsDirectory, 0755, true);
         }
 
-        return $this->path([$modelsDirectory, $model->getClassName().'.php']);
+        return $this->path([$modelsDirectory, $model->getClassName().$type.'.php']);
     }
 
     /**
