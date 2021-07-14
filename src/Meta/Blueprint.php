@@ -91,6 +91,14 @@ class Blueprint
     {
         return $this->table;
     }
+	
+	/**
+     * @return string
+     */
+    public function comment()
+    {
+        return $this->comment;
+    }
 
     /**
      * @return string
@@ -237,7 +245,8 @@ class Blueprint
 	/**
      * @return \Illuminate\Support\Fluent
      */
-	public function withComment($comment){
+	public function withComment($comment)
+	{
         $this->comment = $comment;
         
         return $this;
