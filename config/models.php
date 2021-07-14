@@ -126,7 +126,7 @@ return [
         |
         */
 
-        'soft_deletes' => true,
+        'soft_deletes' => false,
 
         // 'soft_deletes' => [
         //     'enabled' => true,

@@ -477,17 +477,19 @@ class Factory
         foreach ($model->getBlueprint()->columns() as $column) {
             switch ($column->type) {
                 case 'int':
+                case 'bool':
                     $value = 0;
                     break;
-                case 'string':
-                    $value = "''";
-                    break;
+					
+				case 'string':
+					$value = "''";
+					break;
+					
                 default:
                     $value = '';
-                    break;
             }
 
-            $annotations .= "\t\t\t\$param['".$column->name."'] => empty(\$param['".$column->name."']) ? $value : \$param['".$column->name."'],\n";
+            $annotations .= "\t\t\$model->".$column->name." = empty(\$param['".$column->name."']) ? $value : \$param['".$column->name."'],\n";
         }
 
         return $annotations;
