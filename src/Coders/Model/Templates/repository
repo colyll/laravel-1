@@ -12,7 +12,6 @@ class {{class}}Repository {
 	{
         $wheres = [];
 {{listBody}}
-
         $data = {{class}}::query()->where($wheres);
         // $count = $model->count();
         $this->order($data, $param);
@@ -26,7 +25,6 @@ class {{class}}Repository {
 	{
         $model = new {{class}}();
 {{updateBody}}
-
         $data = $model->save();
         if ( !$data) {
 //           throw new
@@ -47,7 +45,6 @@ class {{class}}Repository {
             return  false;
         }
 {{updateBody}}
-
         return $model->save();
     }
 

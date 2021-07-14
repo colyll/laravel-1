@@ -489,7 +489,7 @@ class Factory
                     $value = '';
             }
 
-            $annotations .= "\t\t\$model->".$column->name." = empty(\$param['".$column->name."']) ? $value : \$param['".$column->name."'],\n";
+            $annotations .= "\t\t\$model->".$column->name." = empty(\$param['".$column->name."']) ? $value : \$param['".$column->name."'];\n";
         }
 
         return $annotations;
