@@ -6,7 +6,7 @@ use App\Constants\CacheConst;
 use App\Repositories\{{class}}Repository;
 use Illuminate\Support\Facades\Cache;
 
-class ConfigService
+class {{class}}Service
 {
     use RedisTrait;
     protected $repository;
