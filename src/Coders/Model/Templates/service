@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Services;
+
+use App\Repositories\{{class}}Repository;
+
+class {{class}}Service
+{
+
+    use RedisTrait;
+    use ServiceTrait;
+
+    protected $repository;
+    private $cache_head = '{{classLower}}:';
+
+    public function __construct()
+    {
+        $this->connectRedis();
+        $this->repository = new {{class}}Repository();
+    }
+
+}
