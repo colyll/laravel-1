@@ -13,10 +13,10 @@ class {{class}}Service
     protected $repository;
     private $cache_head = '{{classLower}}:';
 
-    public function __construct()
+    public function __construct({{class}}Repository ${{classLower}}Repository)
     {
         $this->connectRedis();
-        $this->repository = new {{class}}Repository();
+        $this->repository = ${{classLower}}Repository;
     }
 
 }

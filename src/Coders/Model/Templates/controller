@@ -24,17 +24,16 @@ class {{class}}Controller extends Controller
     
      */
 
-    protected $service;
-
-    public function __construct()
-	{
-        $this->service = new {{class}}Service();
-    }
 
     /**
      * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @param {{class}}Service ${{classLower}}Service
+     *
+     * @return array
      */
-    public function getList(Request $request) : array
+    public function getList(Request $request, {{class}}Service ${{classLower}}Service) : array
 	{
         $rule = [
             'page' => 'nullable',
@@ -44,7 +43,7 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody($this->service->getList($param));
+        return self::formatBody(${{classLower}}Service->getList($param));
     }
 
     /**
@@ -59,10 +58,11 @@ class {{class}}Controller extends Controller
      * Store a newly created resource in storage.
      *
      * @param  Request  $request
+     * @param {{class}}Service ${{classLower}}Service
      *
      * @return array
      */
-    public function add(Request $request) : array
+    public function add(Request $request, {{class}}Service ${{classLower}}Service) : array
 	{
         $rule = [
 {{rule}}
@@ -70,13 +70,18 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody($this->service->create($param));
+        return self::formatBody(${{classLower}}Service->create($param));
     }
 
     /**
      * Display the specified resource.
+     *
+     * @param  Request  $request
+     * @param {{class}}Service ${{classLower}}Service
+     *
+     * @return array
      */
-    public function info(Request $request) : array
+    public function info(Request $request, {{class}}Service ${{classLower}}Service) : array
 	{
         $rule = [
             'id' => 'required|min:1'
@@ -84,29 +89,38 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody($this->service->info($param));
+        return self::formatBody(${{classLower}}Service->info($param));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
+     * @param  Request  $request
+     * @param {{class}}Service ${{classLower}}Service
+     *
+     * @return view
      */
-    public function edit(Request $request)
+    public function edit(Request $request, {{class}}Service ${{classLower}}Service)
     {
         $rule = [
             'id' => 'required|min:1'
         ];
 
         $param = $request->validate($rule);
-        $data = $this->service->info($param);
+        $data = ${{classLower}}Service->info($param);
 
-        return view('{{classLower}}.edit', $data);
+        return view('{{classLower}}.edit', compact('data'));
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param  Request  $request
+     * @param {{class}}Service ${{classLower}}Service
+     *
+     * @return array
      */
-    public function update(Request $request) : array
+    public function update(Request $request, {{class}}Service ${{classLower}}Service) : array
 	{
         $rule = [
 {{rule}}
@@ -114,13 +128,18 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody($this->service->update($param));
+        return self::formatBody(${{classLower}}Service->update($param));
     }
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param  Request  $request
+     * @param {{class}}Service ${{classLower}}Service
+     *
+     * @return array
      */
-    public function delete(Request $request) : array
+    public function delete(Request $request, {{class}}Service ${{classLower}}Service) : array
 	{
         $rule = [
             'id' => 'required|min:1'
@@ -128,6 +147,6 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody($this->service->delete($param));
+        return self::formatBody(${{classLower}}Service->delete($param));
     }
 }
