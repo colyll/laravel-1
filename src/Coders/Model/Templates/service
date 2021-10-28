@@ -11,12 +11,12 @@ class {{class}}Service
     use ServiceTrait;
 
     protected $repository;
-    private $cache_head = '{{classLower}}:';
+    private $cache_head = '{{classLowerSeparators:}}:';
 
-    public function __construct({{class}}Repository ${{classLower}}Repository)
+    public function __construct({{class}}Repository ${{classFirstLower}}Repository)
     {
         $this->connectRedis();
-        $this->repository = ${{classLower}}Repository;
+        $this->repository = ${{classFirstLower}}Repository;
     }
 
 }

@@ -287,7 +287,10 @@ class Factory
 
     protected function fillTemplateController($template, Model $model)
     {
-        $template = str_replace('{{classLower}}', strtolower($model->getClassName()), $template);
+        $template = str_replace('{{classFirstLower}}', lcfirst($model->getClassName()), $template);
+        $template = str_replace('{{classLowerSeparators:}}', Str::snake($model->getTable(true), ':'), $template);
+        $template = str_replace('{{classLowerSeparators.}}', Str::snake($model->getTable(true), '.'), $template);
+        $template = str_replace('{{classLowerSeparators_}}', Str::snake($model->getTable(true), '_'), $template);
         $template = str_replace('{{class}}', $model->getClassName(), $template);
 
         $rules = $this->rule($model);
@@ -299,7 +302,10 @@ class Factory
 
     protected function fillTemplateService($template, Model $model)
     {
-		$template = str_replace('{{classLower}}', strtolower($model->getClassName()), $template);
+		$template = str_replace('{{classFirstLower}}', lcfirst($model->getClassName()), $template);
+		$template = str_replace('{{classLowerSeparators:}}', Str::snake($model->getTable(true), ':'), $template);
+        $template = str_replace('{{classLowerSeparators.}}', Str::snake($model->getTable(true), '.'), $template);
+        $template = str_replace('{{classLowerSeparators_}}', Str::snake($model->getTable(true), '_'), $template);
         $template = str_replace('{{class}}', $model->getClassName(), $template);
 
         return $template;
@@ -307,7 +313,10 @@ class Factory
 
     protected function fillTemplateRepository($template, Model $model)
     {
-        $template = str_replace('{{classLower}}', strtolower($model->getClassName()), $template);
+		$template = str_replace('{{classFirstLower}}', lcfirst($model->getClassName()), $template);
+        $template = str_replace('{{classLowerSeparators:}}', Str::snake($model->getTable(true), ':'), $template);
+        $template = str_replace('{{classLowerSeparators.}}', Str::snake($model->getTable(true), '.'), $template);
+        $template = str_replace('{{classLowerSeparators_}}', Str::snake($model->getTable(true), '_'), $template);
         $template = str_replace('{{class}}', $model->getClassName(), $template);
 
         $listBody = $this->listBody($model);
