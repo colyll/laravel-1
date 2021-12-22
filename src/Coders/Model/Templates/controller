@@ -10,7 +10,7 @@ class {{class}}Controller extends Controller
     /**
     //Web Routers
     
-    Route::group(['prefix'=>'{{classLower}}','as'=>'{{classLower}}.'], function(){
+    Route::group(['prefix'=>'{{classLowerSeparators.}}','as'=>'{{classLowerSeparators.}}.'], function(){
        Route::get('/list', '{{class}}Controller@getList')->name('list');
        Route::post('/list', '{{class}}Controller@getList');
        Route::get('/info', '{{class}}Controller@info')->name('info');
