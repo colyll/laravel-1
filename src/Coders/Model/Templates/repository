@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\{{baseDirectory}};
 
 use App\Constants\DataStatusConst;
-use App\Models\{{class}};
+use App\Models\{{baseDirectory}}\{{class}};
 
 class {{class}}Repository {
     use Repository;

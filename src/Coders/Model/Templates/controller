@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\{{baseDirectory}};
 
-use App\Services\{{class}}Service;
+use App\Http\Controllers\Controller;
+use App\Services\{{baseDirectory}}\{{class}}Service;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class {{class}}Controller extends Controller

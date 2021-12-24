@@ -163,6 +163,11 @@ class Model
     protected $relationNameStrategy = '';
 
     /**
+     * @var string
+     */
+    protected $baseDirectory = '';
+
+    /**
      * ModelClass constructor.
      *
      * @param \Reliese\Meta\Blueprint $blueprint
@@ -541,6 +546,13 @@ class Model
         }
 
         return Str::studly($this->getRecordName());
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseDirectory(){
+        return ucfirst(strtok($this->getRecordName(), '-_'));
     }
 
     /**

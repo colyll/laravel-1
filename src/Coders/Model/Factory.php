@@ -179,10 +179,11 @@ class Factory
             $file_controller = str_replace("\t", str_repeat(' ', $model->indentWithSpace()), $file_controller);
         }
 
-        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : []), $file);
-        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [], 'Repository'), $file_repository);
-        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [], 'Service'), $file_service);
-        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [], 'Controller'), $file_controller);
+        $base = $model->getBaseDirectory();
+        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [$base]), $file);
+        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [$base], 'Repository'), $file_repository);
+        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [$base], 'Service'), $file_service);
+        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [$base], 'Controller'), $file_controller);
 
 
         if ($this->needsUserFile($model)) {
@@ -263,6 +264,7 @@ class Factory
      */
     protected function fillTemplate($template, Model $model)
     {
+        $template = $this->fillTemplateAll($template, $model);
 		$template = str_replace('{{comment}}', $model->getComment(), $template);
         $template = str_replace('{{namespace}}', $model->getBaseNamespace(), $template);
         $template = str_replace('{{class}}', $model->getClassName(), $template);
@@ -287,7 +289,7 @@ class Factory
 
     protected function fillTemplateController($template, Model $model)
     {
-        $template = str_replace('{{classFirstLower}}', lcfirst($model->getClassName()), $template);
+        $template = $this->fillTemplateAll($template, $model);
         $template = str_replace('{{classLowerSeparators:}}', Str::snake($model->getClassName(), ':'), $template);
         $template = str_replace('{{classLowerSeparators.}}', Str::snake($model->getClassName(), '.'), $template);
         $template = str_replace('{{classLowerSeparators_}}', Str::snake($model->getClassName(), '_'), $template);
@@ -302,7 +304,7 @@ class Factory
 
     protected function fillTemplateService($template, Model $model)
     {
-		$template = str_replace('{{classFirstLower}}', lcfirst($model->getClassName()), $template);
+        $template = $this->fillTemplateAll($template, $model);
 		$template = str_replace('{{classLowerSeparators:}}', Str::snake($model->getClassName(), ':'), $template);
         $template = str_replace('{{classLowerSeparators.}}', Str::snake($model->getClassName(), '.'), $template);
         $template = str_replace('{{classLowerSeparators_}}', Str::snake($model->getClassName(), '_'), $template);
@@ -313,7 +315,7 @@ class Factory
 
     protected function fillTemplateRepository($template, Model $model)
     {
-		$template = str_replace('{{classFirstLower}}', lcfirst($model->getClassName()), $template);
+        $template = $this->fillTemplateAll($template, $model);
         $template = str_replace('{{classLowerSeparators:}}', Str::snake($model->getClassName(), ':'), $template);
         $template = str_replace('{{classLowerSeparators.}}', Str::snake($model->getClassName(), '.'), $template);
         $template = str_replace('{{classLowerSeparators_}}', Str::snake($model->getClassName(), '_'), $template);
@@ -324,6 +326,13 @@ class Factory
 
         $updateBody = $this->updateBody($model);
         $template = str_replace('{{updateBody}}', $updateBody, $template);
+
+        return $template;
+    }
+
+    protected function fillTemplateAll($template, Model $model){
+        $template = str_replace('{{baseDirectory}}', $model->getBaseDirectory(), $template);
+        $template = str_replace('{{classFirstLower}}', lcfirst($model->getClassName()), $template);
 
         return $template;
     }

@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\{{baseDirectory}};
 
-use App\Repositories\{{class}}Repository;
+use App\Repositories\{{baseDirectory}}\{{class}}Repository;
+use App\Services\RedisTrait;
+use App\Services\ServiceTrait;
 
 class {{class}}Service
 {
