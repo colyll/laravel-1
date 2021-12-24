@@ -4,6 +4,7 @@ namespace App\Repositories\{{baseDirectory}};
 
 use App\Constants\DataStatusConst;
 use App\Models\{{baseDirectory}}\{{class}};
+use App\Repositories\Repository;
 
 class {{class}}Repository {
     use Repository;

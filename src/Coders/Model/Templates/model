@@ -4,7 +4,7 @@
  * Created by Reliese Model.
  */
 
-namespace {{namespace}};
+namespace {{namespace}}\{{baseDirectory}};
 
 {{imports}}
 
