@@ -24,14 +24,9 @@ class {{class}}Repository {
 
     public function create(array $param = [])
 	{
-        $model = new {{class}}();
 {{updateBody}}
-        $data = $model->save();
-        if ( !$data) {
-//           throw new
-        }
         
-        return $model;
+        return {{class}}::query()->create($data);
     }
 
     public function info($id, array $fields = ['*'])
@@ -41,12 +36,9 @@ class {{class}}Repository {
 
     public function update(array $param = [])
     {
-        $model = {{class}}::query()->where('id', $param['id'])->first();
-        if (!$model) {
-            return  false;
-        }
 {{updateBody}}
-        return $model->save();
+
+        return {{class}}::query()->where('id', $param['id'])->update($data);
     }
 
     public function delete(int $id)

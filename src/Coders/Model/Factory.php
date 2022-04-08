@@ -490,7 +490,7 @@ class Factory
     protected function updateBody(Model $model)
     {
         // Process property annotations
-        $annotations = '';
+        $annotations = "\t\t\$data = [\n";
 
         foreach ($model->getBlueprint()->columns() as $column) {
             switch ($column->type) {
@@ -507,8 +507,10 @@ class Factory
                     $value = '';
             }
 
-            $annotations .= "\t\t\$model->".$column->name." = empty(\$param['".$column->name."']) ? $value : \$param['".$column->name."'];\n";
+            $annotations .= "\t\t\t'".$column->name."' => empty(\$param['".$column->name."']) ? $value : \$param['".$column->name."'],\n";
         }
+
+        $annotations .= "\t\t];";
 
         return $annotations;
     }
