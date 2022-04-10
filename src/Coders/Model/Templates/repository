@@ -17,21 +17,29 @@ class {{class}}Repository {
         // $count = $model->count();
         $this->order($data, $param);
         $this->page($data, $param);
-        $data = $data->get($field)->toArray();
+        $data = $data->get($field);
+        if ($data->isNotEmpty()) {
+            $data = $data->toArray();
+        }
 
-        return ['list' => $data];
+        return $data;
     }
 
     public function create(array $param = [])
 	{
 {{updateBody}}
-        
+
         return {{class}}::query()->create($data);
     }
 
     public function info($id, array $fields = ['*'])
 	{
-        return {{class}}::query()->find($id, $fields);
+        $data = {{class}}::query()->find($id, $fields);
+        if ($data) {
+            $data = $data->toArray();
+        }
+
+        return $data;
     }
 
     public function update(array $param = [])
