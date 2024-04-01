@@ -1,11 +1,9 @@
 <?php
 
-/**
- * Created by Reliese Model.
- */
 
 namespace {{namespace}}\{{baseDirectory}};
 
+use App\Models\BaseModel;
 {{imports}}
 
 /**

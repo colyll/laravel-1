@@ -164,11 +164,11 @@ class Factory
         $model = $this->makeModel($schema, $table);
         $template = $this->prepareTemplate($model, 'model');
         $template_controller = $this->prepareTemplate($model, 'controller');
-        $template_repository = $this->prepareTemplate($model, 'repository');
+//        $template_repository = $this->prepareTemplate($model, 'repository');
         $template_service = $this->prepareTemplate($model, 'service');
 
         $file = $this->fillTemplate($template, $model);
-        $file_repository = $this->fillTemplateRepository($template_repository, $model);
+//        $file_repository = $this->fillTemplateRepository($template_repository, $model);
         $file_service = $this->fillTemplateService($template_service, $model);
         $file_controller = $this->fillTemplateController($template_controller, $model);
 
@@ -181,7 +181,7 @@ class Factory
 
         $base = $model->getBaseDirectory();
         $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [$base]), $file);
-        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [$base], 'Repository'), $file_repository);
+//        $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [$base], 'Repository'), $file_repository);
         $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [$base], 'Service'), $file_service);
         $this->files->put($this->modelPath($model, $model->usesBaseFiles() ? ['Base'] : [$base], 'Controller'), $file_controller);
 
@@ -645,9 +645,9 @@ class Factory
             case 'Service':
                 $key = 'path_service';
                 break;
-            case 'Repository':
-                $key = 'path_repository';
-                break;
+//            case 'Repository':
+//                $key = 'path_repository';
+//                break;
             default :
                 $key = 'path';
         }

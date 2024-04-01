@@ -2,23 +2,22 @@
 
 namespace App\Services\{{baseDirectory}};
 
-use App\Repositories\{{baseDirectory}}\{{class}}Repository;
+use App\Models\{{baseDirectory}}\{{class}};
 use App\Services\RedisTrait;
-use App\Services\ServiceTrait;
+use App\Services\Service;
 
-class {{class}}Service
+class {{class}}Service extends Service
 {
 
     use RedisTrait;
-    use ServiceTrait;
 
-    protected $repository;
+    protected $model;
     private $cache_head = '{{classLowerSeparators:}}:';
 
-    public function __construct({{class}}Repository ${{classFirstLower}}Repository)
+    public function __construct({{class}} ${{classFirstLower}})
     {
         $this->connectRedis();
-        $this->repository = ${{classFirstLower}}Repository;
+        $this->model = ${{classFirstLower}};
     }
 
 }

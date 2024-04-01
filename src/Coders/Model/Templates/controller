@@ -91,7 +91,7 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody(${{classFirstLower}}Service->info($param));
+        return self::formatBody(${{classFirstLower}}Service->getInfo($param));
     }
 
     /**
@@ -109,7 +109,7 @@ class {{class}}Controller extends Controller
         ];
 
         $param = $request->validate($rule);
-        $data = ${{classFirstLower}}Service->info($param);
+        $data = ${{classFirstLower}}Service->getInfo($param);
 
         return view('{{classLowerSeparators.}}.edit', compact('data'));
     }
