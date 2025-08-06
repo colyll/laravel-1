@@ -7,12 +7,12 @@
 
 namespace Reliese\Coders\Model;
 
+use Illuminate\Database\DatabaseManager;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Reliese\Meta\Blueprint;
-use Reliese\Support\Classify;
 use Reliese\Meta\SchemaManager;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Database\DatabaseManager;
+use Reliese\Support\Classify;
 
 class Factory
 {
@@ -403,7 +403,7 @@ class Factory
                 }
 
                 $importableDependencies[trim($usedClass, '\\')] = true;
-                $placeholder = str_replace($usedClass, $className, $placeholder);
+                $placeholder = preg_replace('!'.addslashes($usedClass).'\b!', addslashes($className), $placeholder, 1);
             }
         }
 
@@ -596,15 +596,18 @@ class Factory
             $body .= $this->class->field('snakeAttributes', false, ['visibility' => 'public static']);
         }
 
+        if ($model->usesColumnList()) {
+            $properties = array_keys($model->getProperties());
+
+            $body .= "\n";
+            $body .= $this->class->field('columns', $properties);
+        }
+
         if ($model->hasCasts()) {
             $body .= $this->class->field('casts', $model->getCasts(), ['before' => "\n"]);
         }
 
-        if ($model->hasDates()) {
-            $body .= $this->class->field('dates', $model->getDates(), ['before' => "\n"]);
-        }
-
-        if ($model->hasHidden() && $model->doesNotUseBaseFiles()) {
+        if ($model->hasHidden() && ($model->doesNotUseBaseFiles() || $model->hiddenInBaseFiles())) {
             $body .= $this->class->field('hidden', $model->getHidden(), ['before' => "\n"]);
         }
 
@@ -621,7 +624,14 @@ class Factory
         }
 
         foreach ($model->getRelations() as $constraint) {
-            $body .= $this->class->method($constraint->name(), $constraint->body(), ['before' => "\n"]);
+            $body .= $this->class->method(
+                $constraint->name(),
+                $constraint->body(),
+                [
+                    'before' => "\n",
+                    'returnType' => $model->definesReturnTypes() ? $constraint->returnType() : null,
+                ]
+            );
         }
 
         // Make sure there not undesired line breaks
@@ -726,7 +736,7 @@ class Factory
     {
         $body = '';
 
-        if ($model->hasHidden()) {
+        if ($model->hasHidden() && !$model->hiddenInBaseFiles()) {
             $body .= $this->class->field('hidden', $model->getHidden());
         }
 
@@ -747,7 +757,7 @@ class Factory
      *
      * @return mixed|\Reliese\Coders\Model\Config
      */
-    public function config(Blueprint $blueprint = null, $key = null, $default = null)
+    public function config(?Blueprint $blueprint = null, $key = null, $default = null)
     {
         if (is_null($blueprint)) {
             return $this->config;

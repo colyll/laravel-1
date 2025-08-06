@@ -16,7 +16,7 @@ class HasOne extends HasOneOrMany
      */
     public function hint()
     {
-        return $this->related->getQualifiedUserClassName();
+        return $this->related->getQualifiedUserClassName() . '|null';
     }
 
     /**
@@ -37,5 +37,13 @@ class HasOne extends HasOneOrMany
     public function method()
     {
         return 'hasOne';
+    }
+
+    /**
+     * @return string
+     */
+    public function returnType()
+    {
+        return \Illuminate\Database\Eloquent\Relations\HasOne::class;
     }
 }

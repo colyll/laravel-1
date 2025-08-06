@@ -70,11 +70,6 @@ class Model
     /**
      * @var array
      */
-    protected $dates = [];
-
-    /**
-     * @var array
-     */
     protected $hints = [];
 
     /**
@@ -163,6 +158,11 @@ class Model
     protected $relationNameStrategy = '';
 
     /**
+     * @var bool
+     */
+    protected $definesReturnTypes = false;
+
+    /**
      * @var string
      */
     protected $baseDirectory = '';
@@ -215,6 +215,8 @@ class Model
         // Relation name settings
         $this->withRelationNameStrategy($this->config('relation_name_strategy', $this->getDefaultRelationNameStrategy()));
 
+        $this->definesReturnTypes = $this->config('enable_return_types', false);
+
         return $this;
     }
 
@@ -265,12 +267,8 @@ class Model
             $cast = 'string';
         }
 
-        // Track dates
-        if ($cast == 'date') {
-            $this->dates[] = $propertyName;
-        }
-        // Track attribute casts
-        elseif ($cast != 'string') {
+        // Track attribute casts, ignoring timestamps
+        if ($cast != 'string' && !in_array($propertyName, [$this->CREATED_AT, $this->UPDATED_AT])) {
             $this->casts[$propertyName] = $cast;
         }
 
@@ -359,7 +357,7 @@ class Model
             case 'collection':
                 $type = '\Illuminate\Support\Collection';
                 break;
-            case 'date':
+            case 'datetime':
                 $type = '\Carbon\Carbon';
                 break;
             case 'binary':
@@ -1014,7 +1012,12 @@ class Model
      */
     public function getDates()
     {
-        return array_diff($this->dates, [$this->CREATED_AT, $this->UPDATED_AT]);
+        return array_diff(
+            array_filter($this->casts, function (string $cast) {
+                return $cast === 'datetime';
+            }),
+            [$this->CREATED_AT, $this->UPDATED_AT]
+        );
     }
 
     /**
@@ -1227,6 +1230,11 @@ class Model
         return $this->config('with_property_constants', false);
     }
 
+    public function usesColumnList()
+    {
+        return $this->config('with_column_list', false);
+    }
+
     /**
      * @return int
      */
@@ -1268,5 +1276,21 @@ class Model
     public function fillableInBaseFiles(): bool
     {
         return $this->config('fillable_in_base_files', false);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hiddenInBaseFiles(): bool
+    {
+        return $this->config('hidden_in_base_files', false);
+    }
+
+    /**
+     * @return bool
+     */
+    public function definesReturnTypes()
+    {
+        return $this->definesReturnTypes;
     }
 }
