@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Services\{{baseDirectory}};
+
+use App\Models\{{baseDirectory}}\{{class}};
+use App\Services\RedisTrait;
+use App\Services\Service;
+
+class {{class}}Service extends Service
+{
+
+    use RedisTrait;
+
+    protected $model;
+    private $cache_head = '{{classLowerSeparators:}}:';
+
+    public function __construct({{class}} ${{classFirstLower}})
+    {
+        $this->connectRedis();
+        $this->model = ${{classFirstLower}};
+    }
+
+}

@@ -1,14 +1,13 @@
 <?php
 
-/**
- * Created by Reliese Model.
- */
 
-namespace {{namespace}};
+namespace {{namespace}}\{{baseDirectory}};
 
+use App\Models\BaseModel;
 {{imports}}
 
 /**
+ *  {{comment}}
  * Class {{class}}
  * {{properties}}
  *

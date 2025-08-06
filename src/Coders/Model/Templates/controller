@@ -1,0 +1,154 @@
+<?php
+
+namespace App\Http\Controllers\{{baseDirectory}};
+
+use App\Http\Controllers\Controller;
+use App\Services\{{baseDirectory}}\{{class}}Service;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
+
+class {{class}}Controller extends Controller
+{
+    /**
+    //Web Routers
+    
+    Route::group(['prefix'=>'{{classLowerSeparators.}}','as'=>'{{classLowerSeparators.}}.'], function(){
+       Route::get('/list', '{{class}}Controller@getList')->name('list');
+       Route::post('/list', '{{class}}Controller@getList');
+       Route::get('/info', '{{class}}Controller@info')->name('info');
+       Route::get('/add', '{{class}}Controller@addForm')->name('add');
+       Route::post('/add', '{{class}}Controller@add');
+       Route::get('/edit', '{{class}}Controller@edit')->name('edit');
+       Route::post('/update', '{{class}}Controller@update')->name('update');
+       Route::get('/delete', '{{class}}Controller@delete')->name('delete');
+       Route::post('/delete', '{{class}}Controller@delete');
+    });
+    
+     */
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @param {{class}}Service ${{classFirstLower}}Service
+     *
+     * @return array
+     */
+    public function getList(Request $request, {{class}}Service ${{classFirstLower}}Service) : array
+	{
+        $rule = [
+            'page' => 'nullable',
+            'page_size' => 'nullable',
+{{rule}}
+        ];
+
+        $param = $request->validate($rule);
+
+        return self::formatBody(${{classFirstLower}}Service->getList($param));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function addForm()
+    {
+        return view('{{classLowerSeparators.}}.add');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  Request  $request
+     * @param {{class}}Service ${{classFirstLower}}Service
+     *
+     * @return array
+     */
+    public function add(Request $request, {{class}}Service ${{classFirstLower}}Service) : array
+	{
+        $rule = [
+{{rule}}
+        ];
+
+        $param = $request->validate($rule);
+
+        return self::formatBody(${{classFirstLower}}Service->create($param));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  Request  $request
+     * @param {{class}}Service ${{classFirstLower}}Service
+     *
+     * @return array
+     */
+    public function info(Request $request, {{class}}Service ${{classFirstLower}}Service) : array
+	{
+        $rule = [
+            'id' => 'required|min:1'
+        ];
+
+        $param = $request->validate($rule);
+
+        return self::formatBody(${{classFirstLower}}Service->getInfo($param));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  Request  $request
+     * @param {{class}}Service ${{classFirstLower}}Service
+     *
+     * @return view
+     */
+    public function edit(Request $request, {{class}}Service ${{classFirstLower}}Service)
+    {
+        $rule = [
+            'id' => 'required|min:1'
+        ];
+
+        $param = $request->validate($rule);
+        $data = ${{classFirstLower}}Service->getInfo($param);
+
+        return view('{{classLowerSeparators.}}.edit', compact('data'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  Request  $request
+     * @param {{class}}Service ${{classFirstLower}}Service
+     *
+     * @return array
+     */
+    public function update(Request $request, {{class}}Service ${{classFirstLower}}Service) : array
+	{
+        $rule = [
+{{rule}}
+        ];
+
+        $param = $request->validate($rule);
+
+        return self::formatBody(${{classFirstLower}}Service->update($param));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  Request  $request
+     * @param {{class}}Service ${{classFirstLower}}Service
+     *
+     * @return array
+     */
+    public function delete(Request $request, {{class}}Service ${{classFirstLower}}Service) : array
+	{
+        $rule = [
+            'id' => 'required|min:1'
+        ];
+
+        $param = $request->validate($rule);
+
+        return self::formatBody(${{classFirstLower}}Service->delete($param));
+    }
+}

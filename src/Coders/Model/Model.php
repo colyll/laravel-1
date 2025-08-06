@@ -163,6 +163,11 @@ class Model
     protected $definesReturnTypes = false;
 
     /**
+     * @var string
+     */
+    protected $baseDirectory = '';
+
+    /**
      * ModelClass constructor.
      *
      * @param \Reliese\Meta\Blueprint $blueprint
@@ -386,6 +391,14 @@ class Model
 
         return $this->blueprint->table();
     }
+	
+	/**
+     * @return string
+     */
+	public function getComment()
+    {
+        return $this->blueprint->comment();
+    }
 
     /**
      * @return string
@@ -531,6 +544,13 @@ class Model
         }
 
         return Str::studly($this->getRecordName());
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseDirectory(){
+        return ucfirst(strtok($this->getRecordName(), '-_'));
     }
 
     /**

@@ -26,6 +26,9 @@ return [
         */
 
         'path' => app_path('Models'),
+        'path_controller' => app_path('Http/Controllers'),
+        'path_service' => app_path('Services'),
+        // 'path_repository' => app_path('Repositories'),
 
         /*
         |--------------------------------------------------------------------------
@@ -52,7 +55,8 @@ return [
         |
         */
 
-        'parent' => Illuminate\Database\Eloquent\Model::class,
+        // 'parent' => Illuminate\Database\Eloquent\Model::class,
+        'parent' => App\Models\BaseModel::class,
 
         /*
         |--------------------------------------------------------------------------
@@ -99,15 +103,15 @@ return [
         |
         */
 
-        'timestamps' => true,
+        // 'timestamps' => true,
 
-        // 'timestamps' => [
-        //     'enabled' => true,
-        //     'fields' => [
-        //         'CREATED_AT' => 'created_at',
-        //         'UPDATED_AT' => 'updated_at',
-        //     ]
-        // ],
+         'timestamps' => [
+             'enabled' => true,
+             'fields' => [
+                 'CREATED_AT' => 'created_at',
+                 'UPDATED_AT' => 'updated_at',
+             ]
+         ],
 
         /*
         |--------------------------------------------------------------------------
@@ -123,7 +127,7 @@ return [
         |
         */
 
-        'soft_deletes' => true,
+        'soft_deletes' => false,
 
         // 'soft_deletes' => [
         //     'enabled' => true,
@@ -311,7 +315,7 @@ return [
         |
         */
 
-        'table_prefix' => '',
+        'table_prefix' => 't_',
 
         /*
         |--------------------------------------------------------------------------
