@@ -174,7 +174,7 @@ class Factory
 
         if ($model->indentWithSpace()) {
             $file = str_replace("\t", str_repeat(' ', $model->indentWithSpace()), $file);
-            $file_repository = str_replace("\t", str_repeat(' ', $model->indentWithSpace()), $file_repository);
+//            $file_repository = str_replace("\t", str_repeat(' ', $model->indentWithSpace()), $file_repository);
             $file_service = str_replace("\t", str_repeat(' ', $model->indentWithSpace()), $file_service);
             $file_controller = str_replace("\t", str_repeat(' ', $model->indentWithSpace()), $file_controller);
         }
@@ -309,6 +309,12 @@ class Factory
         $template = str_replace('{{classLowerSeparators.}}', Str::snake($model->getClassName(), '.'), $template);
         $template = str_replace('{{classLowerSeparators_}}', Str::snake($model->getClassName(), '_'), $template);
         $template = str_replace('{{class}}', $model->getClassName(), $template);
+
+        $listBody = $this->listBody($model);
+        $template = str_replace('{{listBody}}', $listBody, $template);
+
+        $updateBody = $this->updateBody($model);
+        $template = str_replace('{{updateBody}}', $updateBody, $template);
 
         return $template;
     }
@@ -466,19 +472,19 @@ class Factory
             switch ($column->type) {
                 case 'string':
                     $annotations .= "\t\tif (isset(\$param['".$column->name."']) && trim(\$param['".$column->name."'])) {\n".
-                        "\t\t\t\$wheres[] = ['".$column->name."', 'like', '%'.\$param['".$column->name."'].'%'];\n".
+                        "\t\t\t\$this->wheres[] = ['".$column->name."', 'like', '%'.\$param['".$column->name."'].'%'];\n".
                         "\t\t}\n";
                     break;
 
                 case 'bool':
                     $annotations .= "\t\tif (isset(\$param['".$column->name."'])) {\n".
-                        "\t\t\t\$wheres[] = ['".$column->name."', '=', \$param['".$column->name."']];\n".
+                        "\t\t\t\$this->wheres[] = ['".$column->name."', '=', \$param['".$column->name."']];\n".
                         "\t\t}\n";
                     break;
 
                 default :
                     $annotations .= "\t\tif (!empty(\$param['".$column->name."'])) {\n".
-                        "\t\t\t\$wheres[] = ['".$column->name."', '=', \$param['".$column->name."']];\n".
+                        "\t\t\t\$this->wheres[] = ['".$column->name."', '=', \$param['".$column->name."']];\n".
                         "\t\t}\n";
             }
         }
