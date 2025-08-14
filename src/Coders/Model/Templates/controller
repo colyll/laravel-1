@@ -13,29 +13,43 @@ class {{class}}Controller extends Controller
     //Web Routers
     
     Route::group(['prefix'=>'{{classLowerSeparators.}}','as'=>'{{classLowerSeparators.}}.'], function(){
+       Route::get('/index', '{{class}}Controller@index')->name('index');
        Route::get('/list', '{{class}}Controller@getList')->name('list');
        Route::post('/list', '{{class}}Controller@getList');
        Route::get('/info', '{{class}}Controller@info')->name('info');
        Route::get('/add', '{{class}}Controller@addForm')->name('add');
        Route::post('/add', '{{class}}Controller@add');
-       Route::get('/edit', '{{class}}Controller@edit')->name('edit');
+       Route::get('/edit', '{{class}}Controller@editForm')->name('edit');
        Route::post('/update', '{{class}}Controller@update')->name('update');
        Route::get('/delete', '{{class}}Controller@delete')->name('delete');
        Route::post('/delete', '{{class}}Controller@delete');
     });
-    
+
      */
+
+     /**
+          * Display index.
+          *
+          * @param Request $request
+          * @param {{class}}Service $service
+          *
+          * @return view
+          */
+         public function index(Request $request, {{class}}Service $service)
+     	{
+             return view('{{classLowerSeparators.}}.index');
+         }
 
 
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @param {{class}}Service ${{classFirstLower}}Service
+     * @param {{class}}Service $service
      *
      * @return array
      */
-    public function getList(Request $request, {{class}}Service ${{classFirstLower}}Service) : array
+    public function getList(Request $request, {{class}}Service $service) : array
 	{
         $rule = [
             'page' => 'nullable',
@@ -45,7 +59,7 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody(${{classFirstLower}}Service->getList($param));
+        return self::formatBody($service->getList($param));
     }
 
     /**
@@ -60,11 +74,11 @@ class {{class}}Controller extends Controller
      * Store a newly created resource in storage.
      *
      * @param  Request  $request
-     * @param {{class}}Service ${{classFirstLower}}Service
+     * @param {{class}}Service $service
      *
      * @return array
      */
-    public function add(Request $request, {{class}}Service ${{classFirstLower}}Service) : array
+    public function add(Request $request, {{class}}Service $service) : array
 	{
         $rule = [
 {{rule}}
@@ -72,18 +86,18 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody(${{classFirstLower}}Service->create($param));
+        return self::formatBody($service->create($param));
     }
 
     /**
      * Display the specified resource.
      *
      * @param  Request  $request
-     * @param {{class}}Service ${{classFirstLower}}Service
+     * @param {{class}}Service $service
      *
      * @return array
      */
-    public function info(Request $request, {{class}}Service ${{classFirstLower}}Service) : array
+    public function info(Request $request, {{class}}Service $service) : array
 	{
         $rule = [
             'id' => 'required|min:1'
@@ -91,25 +105,25 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody(${{classFirstLower}}Service->getInfo($param));
+        return self::formatBody($service->getInfo($param));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  Request  $request
-     * @param {{class}}Service ${{classFirstLower}}Service
+     * @param {{class}}Service $service
      *
      * @return view
      */
-    public function edit(Request $request, {{class}}Service ${{classFirstLower}}Service)
+    public function editForm(Request $request, {{class}}Service $service)
     {
         $rule = [
             'id' => 'required|min:1'
         ];
 
         $param = $request->validate($rule);
-        $data = ${{classFirstLower}}Service->getInfo($param);
+        $data = $service->getInfo($param);
 
         return view('{{classLowerSeparators.}}.edit', compact('data'));
     }
@@ -118,11 +132,11 @@ class {{class}}Controller extends Controller
      * Update the specified resource in storage.
      *
      * @param  Request  $request
-     * @param {{class}}Service ${{classFirstLower}}Service
+     * @param {{class}}Service $service
      *
      * @return array
      */
-    public function update(Request $request, {{class}}Service ${{classFirstLower}}Service) : array
+    public function update(Request $request, {{class}}Service $service) : array
 	{
         $rule = [
 {{rule}}
@@ -130,18 +144,18 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody(${{classFirstLower}}Service->update($param));
+        return self::formatBody($service->update($param));
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  Request  $request
-     * @param {{class}}Service ${{classFirstLower}}Service
+     * @param {{class}}Service $service
      *
      * @return array
      */
-    public function delete(Request $request, {{class}}Service ${{classFirstLower}}Service) : array
+    public function delete(Request $request, {{class}}Service $service) : array
 	{
         $rule = [
             'id' => 'required|min:1'
@@ -149,6 +163,6 @@ class {{class}}Controller extends Controller
 
         $param = $request->validate($rule);
 
-        return self::formatBody(${{classFirstLower}}Service->delete($param));
+        return self::formatBody($service->delete($param));
     }
 }
